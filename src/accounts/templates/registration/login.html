@@ -4,6 +4,7 @@
 
 {% block content %}
     <h1>Вход</h1>
+    <p>У вас нет аккаунта? <a href="{% url 'register' %}">Зарегистрируйтесь!</a></p>
     <div class="login-form">
         <form action="{% url 'login' %}" method="post">
             {% csrf_token %}
