@@ -3,9 +3,21 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <h1>Dashboard</h1>
+    <h1>Профиль</h1>
+    {% with total_images_created=request.user.images_created.count %}
+        <p>
+            Добро пожаловать в ваш профиль.
+            Количество закрепленных изображений: {{ total_images_created }}
+        </p>
+    {% endwith %}
     <p>
-        Добро пожаловать в ваш профиль.
+        Перетащите кнопку на панель закладок, чтобы добавить в закладки изображение
+        с других сайтов
+        <a href="javascript:{% include 'bookmarklet_launcher.js' %}" class="button">
+            Закрепить
+        </a>
+    </p>
+    <p>
         Вы можете <a href="{% url 'edit' %}">изменить ваш профиль</a> или
         <a href="{% url 'password_change' %}">изменить пароль</a>
     </p>

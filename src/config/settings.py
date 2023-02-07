@@ -31,8 +31,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['db8a-37-145-172-4.eu.ngrok.io']
+CSRF_TRUSTED_ORIGINS = ['https://db8a-37-145-172-4.eu.ngrok.io']
 
 # Application definition
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'images'
 ]
 
 MIDDLEWARE = [
