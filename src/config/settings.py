@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '../../.env')
@@ -32,6 +33,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['960b-37-145-172-4.eu.ngrok.io']
+# CSRF_TRUSTED_ORIGINS = ['https://960b-37-145-172-4.eu.ngrok.io']
 
 # Application definition
 
@@ -149,3 +152,8 @@ LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: reverse_lazy('user_detail', args=[u.username])
+}
