@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.http import require_POST
 
+from actions.utils import create_action
 from .forms import ImageCreateForm
 from .models import Image
 from common.decorators import ajax_required, is_ajax
@@ -19,6 +20,7 @@ def image_create(request):
             new_item = form.save(commit=False)
             new_item.user = request.user
             new_item.save()
+            create_action(request.user, 'добавил изображение', new_item)
             messages.success(request, 'Изображение успешно добавлено')
             return redirect(new_item.get_absolute_url())
     else:
@@ -44,6 +46,7 @@ def image_like(request):
         image = Image.objects.get(pk=image_id)
         if action == 'like':
             image.users_like.add(request.user)
+            create_action(request.user, 'оценил', image)
         else:
             image.users_like.remove(request.user)
     return JsonResponse({'status': 'ok'})

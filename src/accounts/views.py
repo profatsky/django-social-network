@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
 
+from actions.models import Action
+from actions.utils import create_action
 from common.decorators import ajax_required
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm
 from .models import Profile, Contact
@@ -18,6 +20,7 @@ def register(request):
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
             Profile.objects.create(user=new_user)
+            create_action(new_user, 'зарегистрировался')
             return render(request,
                           'accounts/register_done.html',
                           {'new_user': new_user})
@@ -48,7 +51,14 @@ def edit(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html', {'section': 'dashboard'})
+    actions = Action.objects.exclude(user=request.user)
+    following_ids = request.user.following.values_list('id', flat=True)
+    if following_ids:
+        actions.filter(user_id__in=following_ids)
+    actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
+    return render(request,
+                  'accounts/dashboard.html',
+                  {'section': 'dashboard', 'actions': actions})
 
 
 @login_required
@@ -78,6 +88,7 @@ def user_follow(request):
             user = User.objects.get(pk=user_id)
             if action == 'follow':
                 Contact.objects.get_or_create(user_from=request.user, user_to=user)
+                create_action(request.user, 'подписался на', user)
             else:
                 Contact.objects.filter(user_from=request.user, user_to=user).delete()
         except User.DoesNotExist:

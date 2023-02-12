@@ -46,8 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sorl.thumbnail',
     'images',
-    'sorl.thumbnail'
+    'actions'
 ]
 
 MIDDLEWARE = [
